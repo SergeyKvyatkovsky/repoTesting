@@ -26,16 +26,17 @@ dependencies {
 classes.doLast() {
     
     def stringGreeting = file('src/main/resources/greeting.txt').getText()
+    // Version check
     if(stringGreeting.contains('ver.')){
         String[] versionArray = stringGreeting.split('ver.')
         version = versionArray[1]   
-        println("Версия сборки : " + version)
+        println("Build version : " + version)
     }else {
         version = 1
         file('src/main/resources/greeting.txt').text = stringGreeting +' '+'ver.1'
     }
 }
-
+// Java method catalog pointing and copy 
 class IncrementalTask extends DefaultTask {
     @InputDirectory
     def File inputDir
@@ -55,11 +56,10 @@ class IncrementalTask extends DefaultTask {
         }
     }
 }
-
+// Task for increment
 task incrementalUpdate(type: IncrementalTask) {
 
-    // In this part code i parsin text in .txt
-
+    
     String s = file('src/main/resources/greeting.txt').getText()
 
     if(s.contains('ver.')) {
