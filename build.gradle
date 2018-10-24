@@ -35,8 +35,5 @@ dependencies {
 classes.doLast {
         file('src/main/resources/greeting.txt').text = buildVersion
         ant.move file: "src/main/resources/greeting.txt",
-                todir: "${buildDir}/resources/main/"
+                 todir: "${buildDir}/resources/main/"
 }
-
-
-
