@@ -30,13 +30,13 @@ classes.doLast() {
     if(stringGreeting.contains('ver.')){
         String[] versionArray = stringGreeting.split('ver.')
         version = versionArray[1]   
-        println("Build version : " + version)
+        println("Версия сборки : " + version)
     }else {
         version = 1
         file('src/main/resources/greeting.txt').text = stringGreeting +' '+'ver.1'
     }
 }
-// Java method catalog pointing and copy 
+
 class IncrementalTask extends DefaultTask {
     @InputDirectory
     def File inputDir
@@ -56,7 +56,7 @@ class IncrementalTask extends DefaultTask {
         }
     }
 }
-// Task for increment
+
 task incrementalUpdate(type: IncrementalTask) {
 
     
