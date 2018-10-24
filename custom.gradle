@@ -1,0 +1,11 @@
+/**
+ *  Create increment version task (should not be included in gradlew build flow, ex: 1.0.1 -> 1.0.2)
+ */
+
+task incrementVersion() {
+    doLast {
+        int i = buildVersion as Integer
+        int newVersion = i + 1
+        file('gradle.properties').text = "buildVersion = " + newVersion
+    }
+}
