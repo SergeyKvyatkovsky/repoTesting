@@ -6,16 +6,16 @@
  */
 
 plugins {
-    id 'java'
     id 'war'
+    id 'maven-publish'
 }
+
 
 apply from:'custom.gradle'
 
-group 'sergey'
-
 version = 1
 sourceCompatibility = 1.8
+group = 'org.sergeykvyatk'
 
 repositories {
     mavenCentral()
@@ -37,3 +37,4 @@ classes.doLast {
         ant.move file: "src/main/resources/greeting.txt",
                  todir: "${buildDir}/resources/main/"
 }
+
