@@ -1,0 +1,80 @@
+node{
+		def remote = [:]
+		remote.name = 'localhost'
+		remote.host = '192.168.0.199'
+		remote.user = 'root'
+		remote.password = '123456'
+		remote.allowAnyHosts = true
+		stage('Test enviroment') { 
+
+			powershell 'ping github.com'
+			powershell 'ping 192.168.0.240'
+			powershell 'ping 192.168.0.199'
+			powershell 'ping 192.168.0.198'
+			powershell 'ping 192.168.0.202'
+
+				script{
+
+					def op = readFile encoding: 'UTF-8', file: 'gradle.properties'
+					println op
+
+					}
+		}
+		stage('Checkout git') { 
+
+		git branch: 'ModulSix', credentialsId: '637dcd76-0c3a-4df7-bcef-93e659af507f', url: 'https://github.com/SergeyKvyatkovsky/DevOps_Training.git'
+
+		}
+
+		stage('Build') {
+
+			powershell 'gradle build incrementVersion publish'
+
+		}
+		stage('Deploy node-1'){
+
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
+			sshCommand remote: remote, command: "ip addr;cd ~ ;cd ..;cd ..;cd ..;cd /usr/share/tomcat/webapps;wget http://192.168.0.202/org/sergeykvyatk/gradleSample/1/gradleSample-1.war; pwd"
+			httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
+
+			}
+}
+
+node{
+		def remote = [:]
+		remote.name = 'localhost'
+		remote.host = '192.168.0.198'
+		remote.user = 'root'
+		remote.password = '123456'
+		remote.allowAnyHosts = true
+		stage('Deploy node-2'){
+
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
+			sshCommand remote: remote, command: "ip addr;cd ~ ;cd ..;cd ..;cd ..;cd /usr/share/tomcat/webapps;wget http://192.168.0.202/org/sergeykvyatk/gradleSample/1/gradleSample-1.war; pwd"
+			httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=0  '
+
+			}
+		stage('Test') { 
+
+			echo "Testing Version"
+
+				script {
+
+				String s = httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.199:8080/gradleSample-1/'
+						if(s!=op){
+							sh "exit 1"
+						}
+
+						}
+		}
+		stage('Push') {
+
+		withCredentials([usernamePassword(credentialsId: 'passwordGit', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+				sh("git add .")
+				sh("git commit ")
+				sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@https://github.com/SergeyKvyatkovsky/DevOps_Training.git ModulSix')
+
+				}
+
+		}
+}

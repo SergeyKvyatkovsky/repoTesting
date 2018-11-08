@@ -23,7 +23,7 @@ publishing {
 
     repositories {
         maven {
-            name = 'maven-central'
+            name = 'maven-releases'
             url = "http://192.168.0.202:8081/repository/maven-releases/"
         }
     }
