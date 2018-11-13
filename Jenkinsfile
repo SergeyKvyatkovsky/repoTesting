@@ -19,7 +19,7 @@ node(){
 }
 node('tomcat-node-1') {
 	stage('Test node-1') {
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
 		sh 'ip addr'
 		sh 'cd ~'
 		sh 'pwd'
@@ -27,13 +27,13 @@ node('tomcat-node-1') {
 		sh 'wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/1/gradleSample-1.war'
 		sh 'cp -u gradleSample-1.war /usr/share/tomcat/webapps'
 		sh 'pwd'
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
 	}
 }
 node('tomcat-node-2') {
 	stage('Test node-2') {
 		sh 'ip addr'
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=0  '
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
 		sh 'ip addr'
 		sh 'cd ~'
 		sh 'pwd'
@@ -42,7 +42,7 @@ node('tomcat-node-2') {
 		sh 'cp -u gradleSample-1.war /usr/share/tomcat/webapps'
 		//sh 'rm -rf gradleSample-1.war'
 		sh 'pwd'
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
+		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=0  '
 		}
 }
 node() {
@@ -57,7 +57,8 @@ node() {
 			String[] b = c[2].split("</p>")
 			String ver = b[0];
 			if (b[0]==a[2]) {
-				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
+				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
+				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
 			} else {
 				println ("Good")
 			}
