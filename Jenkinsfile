@@ -70,7 +70,7 @@ node() {
 			String[] c =  vers.split(" ")
 			def ver = c [2]
 			powershell("git tag -a 'v.1.1.0.${ver}' -m '${ver}'")
-			powershell('git push https:/${Name}:${Password}@github.com/SergeyKvyatkovsky/repoTesting.git --tags')
+			powershell('git push https://${Name}:${Password}@github.com/SergeyKvyatkovsky/repoTesting.git --tags')
 		}
 	}
 }
