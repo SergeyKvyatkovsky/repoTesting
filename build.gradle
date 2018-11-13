@@ -13,7 +13,7 @@ plugins {
 
 apply from:'custom.gradle'
 
-version = 1
+version = buildVersion
 sourceCompatibility = 1.8
 group = 'org.sergeykvyatk'
 
