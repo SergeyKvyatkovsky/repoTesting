@@ -33,7 +33,6 @@ node('tomcat-node-1') {
 		}
 		sh "wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/'${versionN}'/gradleSample-'${versionN}'.war"
 		sh "mv gradleSample-${versionN}.war /usr/share/tomcat/webapps/gradleSample.war"
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
 		sh 'pwd'
 		sleep 15
 		script {
@@ -48,9 +47,9 @@ node('tomcat-node-1') {
 			println versionProp
 			if (b[0]==versionProp) {
 				println("Good")
+				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
 			} else {
 				println ("Bad")
-				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
 				error("Update is fail")
 			}
 		}
