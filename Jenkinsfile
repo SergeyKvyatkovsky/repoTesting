@@ -51,7 +51,7 @@ node('tomcat-node-1') {
 			} else {
 				println ("Bad")
 				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
-				def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
+				error("Update is fail")
 			}
 		}
 	}
@@ -85,8 +85,8 @@ node() {
 			powershell('git commit -m "Task6 inc"')
 			powershell("git tag v.1.4.56.'${ver}'")
 			powershell("git checkout v.1.4.56.'${ver}'")
-			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" --tag')
-			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" ModulSix')
+			powershell('git push "https://${token}@github.com/SergeyKvyatkovsky/repoTesting.git" --tag')
+			powershell('git push "https://${token}@github.com/SergeyKvyatkovsky/repoTesting.git" ModulSix')
 	    }
 	}
 }
