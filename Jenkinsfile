@@ -41,7 +41,7 @@ node() {
 				println("Good")
 			} else {
 				println ("Bad")
-		    	def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
+		    	error("failed")
 			}
 		}
 	}
