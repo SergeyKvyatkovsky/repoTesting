@@ -18,30 +18,21 @@ node() {
 			versionN = a[2]
 		}
 	}
+	stage('Docker up and test node') {
+	    powershell 'docker build --build-arg ver=${versionN} -t moveton/tomcat .'
+	    powershell 'docker run -it -p 8888:8080 moveton/tomcat'
+	}
 }
 
-node('tomcat-node-1') {
-	stage('Deploy and test node-1') {
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
-		sh 'ip addr'
-		sh 'cd ~'
-		sh 'pwd'
-		sh 'ls'
-		script{
-			println versionGlobal
-			println versionN + "##########"
-		}
-		sh "wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/'${versionN}'/gradleSample-'${versionN}'.war"
-		sh "mv gradleSample-${versionN}.war /usr/share/tomcat/webapps/gradleSample.war"
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
-		sh 'pwd'
+node() {
+	stage('test node') {
 		sleep 15
 		script {
-			def verOnTheNode = new URL("http://192.168.0.46:8080/gradleSample/").getText()
+			def verOnTheNode = new URL("http://192.168.99.100:8888/gradleSample/").getText()
 			println verOnTheNode
-			String[] c =  verOnTheNode.split(" ")
-			println("" + c [2])
-			String[] b = c[2].split("</p>")
+			String[] c =  verOnTheNode.split("<p>")
+			println("" + c [1])
+			String[] b = c[1].split("</p>")
 			println("" + b [0])
 			String verOnTheNodeUrl = b[0];
 			String versionProp = versionN
@@ -50,25 +41,9 @@ node('tomcat-node-1') {
 				println("Good")
 			} else {
 				println ("Bad")
-				httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=1  '
-				def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
+			//	def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
 			}
 		}
-	}
-}
-
-node('tomcat-node-2') {
-	stage('Deploy node-2') {
-		sh 'ip addr'
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=0  '
-		sh 'ip addr'
-		sh 'cd ~'
-		sh 'pwd'
-		sh 'ls'
-		sh "wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/'${versionN}'/gradleSample-'${versionN}'.war"
-		sh "mv gradleSample-${versionN}.war /usr/share/tomcat/webapps/gradleSample.war"
-		sh 'pwd'
-		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
 	}
 }
 
