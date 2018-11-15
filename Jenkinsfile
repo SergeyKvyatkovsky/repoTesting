@@ -41,7 +41,7 @@ node() {
 				println("Good")
 			} else {
 				println ("Bad")
-			//	def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
+		    	def pingNodeAndFail = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
 			}
 		}
 	}
@@ -60,8 +60,8 @@ node() {
 			powershell('git commit -m "Task6 inc"')
 			powershell("git tag v.1.4.56.'${ver}'")
 			powershell("git checkout v.1.4.56.'${ver}'")
-			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" --tag')
-			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" ModulSix')
+			powershell('git push "https://${token}@github.com/SergeyKvyatkovsky/repoTesting.git" --tag')
+			powershell('git push "https://${token}@github.com/SergeyKvyatkovsky/repoTesting.git" ModulSix')
 	    }
 	}
 }
