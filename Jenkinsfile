@@ -32,20 +32,19 @@ node('tomcat-node-1') {
 			println versionN + "##########"
 		}
 		sh "wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/'${versionN}'/gradleSample-'${versionN}'.war"
-		sh "cp -u gradleSample-${versionN}.war /usr/share/tomcat/webapps"
-		// sh 'rm -rf gradleSample-1.war'
+		sh "mv gradleSample-${versionN}.war /usr/share/tomcat/webapps/gradleSample.war"
 		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=myworker&vwa=0  '
 		sh 'pwd'
-		sleep 6
+		sleep 15
 		script {
-			def verOnTheNode = new URL("http://192.168.0.46:8080/gradleSample-${versionN}/").getText()
+			def verOnTheNode = new URL("http://192.168.0.46:8080/gradleSample/").getText()
 			println verOnTheNode
 			String[] c =  verOnTheNode.split(" ")
 			println("" + c [2])
 			String[] b = c[2].split("</p>")
 			println("" + b [0])
 			String verOnTheNodeUrl = b[0];
-			String versionProp = '${versionN}'
+			String versionProp = versionN
 			println versionProp
 			if (b[0]==versionProp) {
 				println("Good")
@@ -67,7 +66,7 @@ node('tomcat-node-2') {
 		sh 'pwd'
 		sh 'ls'
 		sh "wget http://192.168.0.202:8081/repository/maven-releases/org/sergeykvyatk/gradleSample/'${versionN}'/gradleSample-'${versionN}'.war"
-		sh "cp -u gradleSample-${versionN}.war /usr/share/tomcat/webapps"
+		sh "mv gradleSample-${versionN}.war /usr/share/tomcat/webapps/gradleSample.war"
 		sh 'pwd'
 		httpRequest ignoreSslErrors: true, responseHandle: 'NONE', url: 'http://192.168.0.240/jkmanager?cmd=update&from=list&w=lb&sw=other&vwa=1  '
 	}
@@ -88,6 +87,6 @@ node() {
 			powershell("git checkout v.1.4.56.'${ver}'")
 			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" --tag')
 			powershell('git push "https://c1c5e05aaf586c604d316c2a3d9c825220ecd3c9@github.com/SergeyKvyatkovsky/repoTesting.git" ModulSix')
-		}
+	    }
 	}
 }
